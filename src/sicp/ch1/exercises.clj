@@ -123,3 +123,53 @@
      (if (good-enough? g g*)
        g*
        (recur x (cons g* guesses))))))
+
+;; Exercise 1.9
+;; The first implementation produces a recursive process as the
+;; expression nests within itself as it recurses.
+
+;; The second implementation produces an interative process as all
+;; necessary state is held within the fn arguments and no further
+;; operations are performed on the result of the recursive expression.
+
+;; This shows two functions can have the same arguments but that does
+;; not suffice for the functions to carry the full state of the
+;; process they produce in the recursive function calls.
+
+
+;; Exercise 1.10
+(defn A [x y]
+  (cond (= y 0) 0
+        (= x 0) (* 2 y)
+        (= y 1) 2
+        :else   (A (- x 1)
+                   (A x (- y 1)))))
+
+(assert (= (A 1 10) 1024))
+
+(assert (= (A 2 4) 65536))
+
+(assert (= (A 3 3) 65536))
+
+(defn A-f
+  "f(n) = 2n"
+  [n]
+  (A 0 n))
+(map A-f (range 0 10))
+
+(defn A-g
+  "g(n) = 2^n except for n=0, which gives you 0"
+  [n]
+  (A 1 n))
+(map A-g (range 0 20))
+
+(defn A-h
+  "h(g) = 2^2^... (n times)
+  when n = 0,     0, 2^2^... (n times))
+  when n = 1,     2, 2^1, 2^n - 
+  when n = 2,     4, 2^2, 2^n 
+  when n = 3,    16, 2^4, 2^n
+  when n = 4, 65536, 2^16"
+  [n]
+  (A 2 n))
+(map A-h (range 0 5))
